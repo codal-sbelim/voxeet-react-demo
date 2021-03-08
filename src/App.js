@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import { reducer as voxeetReducer } from "@voxeet/react-components"
+import React from "react"
+import thunkMidleware from "redux-thunk"
+import { combineReducers, createStore, applyMiddleware } from "redux"
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { ConferenceRoom, VoxeetProvider } from "@voxeet/react-components"
+
+// Import Style
+import "@voxeet/react-components/dist/voxeet-react-components.css"
+
+const reducers = combineReducers({
+  voxeet: voxeetReducer,
+})
+
+const configureStore = () =>
+  createStore(reducers, applyMiddleware(thunkMidleware))
+
+const settings = {
+  consumerKey: "w8D4FQhcKmsrN11rmj1VdA==",
+  consumerSecret: "lhlioRUZky9_SWUF9ZeWfF8vktq8w9vf2Gp24PdUvyg=",
+  conferenceAlias: "Sample",
+  autoJoin: true,
+  displayActions: ["mute", "video", "recording", "screenshare"],
+  disableSounds: false
 }
 
-export default App;
+function App() {
+  console.log('--- test ---');
+  console.log({settings});
+  return (
+    <VoxeetProvider store={configureStore()}>
+      <ConferenceRoom
+        autoJoin={settings.autoJoin}
+        consumerKey={settings.consumerKey}
+        consumerSecret={settings.consumerSecret}
+        conferenceAlias={settings.conferenceAlias}
+        displayActions={settings.displayActions}
+        disableSounds={settings.disableSounds}
+      />
+    </VoxeetProvider>
+  )
+}
+
+export default App
